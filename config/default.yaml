@@ -1,0 +1,44 @@
+llm:
+  providers:
+    openai:
+      model: "gpt-4o"
+      temperature: 0.7
+      max_tokens: 4096
+    anthropic:
+      model: "claude-sonnet-4-20250514"
+      temperature: 0.7
+      max_tokens: 4096
+    ollama:
+      base_url: "http://localhost:11434"
+      model: "llama3:8b"
+      temperature: 0.7
+      max_tokens: 4096
+
+docker:
+  image: "vv-ros-executor:humble"
+  timeout: 120
+  memory_limit: "4g"
+  cpus: 2.0
+  network: "none"
+
+vv_pipeline:
+  enabled_methods:
+    - ruff
+    - pylint_ros
+    - pytest
+    - hypothesis
+
+benchmarks:
+  data_path: "data/roseval_benchmarks.jsonl"
+  filter_difficulty: null
+  filter_node_type: null
+
+metrics:
+  db_path: "results/metrics.db"
+  export_csv: true
+
+experiment:
+  n_candidates: 5
+  selection_strategy: "quality_metric"
+  k_values: [1, 5, 10]
+  parallel_containers: 4

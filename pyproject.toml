@@ -1,0 +1,51 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.backends"
+
+[project]
+name = "vv-ros-llm"
+version = "0.1.0"
+description = "Verification & Validation framework for LLM-generated ROS code"
+requires-python = ">=3.12"
+dependencies = [
+    "openai>=1.40",
+    "anthropic>=0.86",
+    "httpx>=0.28",
+    "pylint>=3.2",
+    "mypy>=1.11",
+    "pandas>=2.2",
+    "numpy>=2.0",
+    "scipy>=1.14",
+    "matplotlib>=3.9",
+    "seaborn>=0.13",
+    "z3-solver>=4.13",
+    "typer>=0.12",
+    "docker>=7.0",
+    "ruff>=0.15",
+    "pydantic>=2.10",
+    "pydantic-settings>=2.10",
+    "pyyaml>=6.0",
+    "jinja2>=3.1",
+    "rich>=13.7",
+    "click>=8.0",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.25",
+    "pytest-cov>=7.0",
+    "hypothesis>=6.100",
+]
+
+[project.scripts]
+vv-ros-llm = "vv_ros_llm.cli:app"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
