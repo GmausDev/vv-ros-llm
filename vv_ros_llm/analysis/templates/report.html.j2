@@ -1,0 +1,20 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>{{ experiment_id }}</title>
+<style>body{font:14px/1.5 system-ui,sans-serif;max-width:960px;margin:2em auto;padding:0 1em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img{max-width:100%}</style>
+</head><body>
+<h1>Experiment Report — {{ experiment_id }}</h1>
+<h2>Overall pass@k</h2>
+<ul>
+{% for k, v in overall_pass_at_k.items() -%}
+<li>pass@{{ k }}: {{ "%.4f" | format(v) }}</li>
+{% endfor %}
+</ul>
+<h2>By model</h2>{{ by_model_md }}
+<h2>By difficulty</h2>{{ by_diff_md }}
+<h2>By node type</h2>{{ by_node_md }}
+<h2>pass@k per model</h2>{{ passk_md }}
+<h2>Plots</h2>
+<img src="data:image/png;base64,{{ plot_bar_png }}" alt="pass@1" />
+<img src="data:image/png;base64,{{ plot_heat_png }}" alt="heat" />
+<img src="data:image/png;base64,{{ plot_lat_png }}" alt="latency" />
+</body></html>

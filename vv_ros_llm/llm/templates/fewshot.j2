@@ -1,0 +1,12 @@
+Here are {{ examples | length }} reference example(s):
+{% for ex in examples %}
+Example {{ loop.index }}:
+Prompt:
+```
+{{ ex.prompt }}
+```
+Solution:
+```python
+{{ ex.solution }}
+```
+{% endfor %}

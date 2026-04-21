@@ -1,6 +1,6 @@
 [build-system]
 requires = ["hatchling"]
-build-backend = "hatchling.backends"
+build-backend = "hatchling.build"
 
 [project]
 name = "vv-ros-llm"
@@ -29,6 +29,9 @@ dependencies = [
     "rich>=13.7",
     "click>=8.0",
     "python-dotenv>=1.0",
+    "tenacity>=8.2",
+    "aiofiles>=23.2",
+    "tiktoken>=0.7",
 ]
 
 [project.optional-dependencies]
@@ -37,6 +40,11 @@ dev = [
     "pytest-asyncio>=0.25",
     "pytest-cov>=7.0",
     "hypothesis>=6.100",
+    "respx>=0.21",
+    "freezegun>=1.5",
+    "pandas-stubs",
+    "types-PyYAML",
+    "pytest-mock>=3.14",
 ]
 
 [project.scripts]
@@ -46,6 +54,18 @@ vv-ros-llm = "vv_ros_llm.cli:app"
 target-version = "py312"
 line-length = 100
 
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+strict = false
+exclude = ["tests/", "build/"]
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+markers = [
+  "docker: requires real Docker daemon",
+  "slow: >2s tests",
+  "network: hits real LLM API (off by default)",
+]
+addopts = "--cov=vv_ros_llm --cov-report=term-missing --cov-fail-under=75 --cov-branch"

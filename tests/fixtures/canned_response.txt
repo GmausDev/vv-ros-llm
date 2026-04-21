@@ -1,0 +1,21 @@
+Here's the implementation:
+
+```python
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import Int32
+
+class Pub(Node):
+    def __init__(self):
+        super().__init__('sample_pub')
+        self.pub = self.create_publisher(Int32, '/sample', 10)
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = Pub()
+    try:
+        rclpy.spin(node)
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
+```

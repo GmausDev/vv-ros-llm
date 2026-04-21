@@ -1,0 +1,23 @@
+# Experiment Report — {{ experiment_id }}
+
+## Overall pass@k
+{% for k, v in overall_pass_at_k.items() -%}
+- pass@{{ k }}: {{ "%.4f" | format(v) }}
+{% endfor %}
+
+## By model
+{{ by_model_md }}
+
+## By difficulty
+{{ by_diff_md }}
+
+## By node type
+{{ by_node_md }}
+
+## pass@k per model
+{{ passk_md }}
+
+## Plots
+![pass@1]({{ plot_bar_png }})
+![model × difficulty]({{ plot_heat_png }})
+![latency]({{ plot_lat_png }})

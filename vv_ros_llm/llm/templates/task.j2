@@ -1,0 +1,29 @@
+Task: {{ task_id }}  (difficulty: {{ difficulty }}, node_type: {{ node_type }})
+
+ROS concepts involved: {{ ros_concepts | join(", ") if ros_concepts else "n/a" }}
+
+Entry point class: `{{ entry_point }}`
+
+Interface contract:
+{% if interface_spec.get("node_name") -%}
+- Node name: `{{ interface_spec.get("node_name") }}`
+{% endif -%}
+{% if interface_spec.get("topics_published") -%}
+- Publishes: {% for t in interface_spec["topics_published"] %}`{{ t.name }}` ({{ t.type }}){% if not loop.last %}, {% endif %}{% endfor %}
+{% endif -%}
+{% if interface_spec.get("topics_subscribed") -%}
+- Subscribes: {% for t in interface_spec["topics_subscribed"] %}`{{ t.name }}` ({{ t.type }}){% if not loop.last %}, {% endif %}{% endfor %}
+{% endif -%}
+{% if interface_spec.get("services_provided") -%}
+- Services provided: {{ interface_spec["services_provided"] | length }}
+{% endif -%}
+{% if interface_spec.get("parameters") -%}
+- Parameters: {{ interface_spec["parameters"] | length }}
+{% endif %}
+
+Stub to complete:
+```python
+{{ prompt }}
+```
+
+Write the full, runnable node implementation (not just the body).

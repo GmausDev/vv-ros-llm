@@ -1,4 +1,4 @@
-.PHONY: install test lint format docker-build run
+.PHONY: install test test-fast test-smoke lint format docker-build run
 
 install:
 	pip install -e ".[dev]"
@@ -19,3 +19,9 @@ docker-build:
 
 run:
 	vv-ros-llm --help
+
+test-fast:
+	pytest -q -m "not docker and not slow and not network"
+
+test-smoke:
+	pytest tests/smoke -q
