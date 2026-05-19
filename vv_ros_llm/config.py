@@ -54,6 +54,7 @@ class ExperimentConfig(BaseModel):
     selection_strategy: str = "quality_metric"
     k_values: list[int] = [1, 5, 10]
     parallel_containers: int = 4
+    parallel_llm_calls: int = 4
 
 
 class _YamlSource(PydanticBaseSettingsSource):

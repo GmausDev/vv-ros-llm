@@ -43,6 +43,7 @@ class ExperimentRunner:
         self.prompt_builder = prompt_builder or PromptBuilder()
         self.workspace_root = workspace_root
         self._sema = asyncio.Semaphore(settings.experiment.parallel_containers)
+        self._llm_sema = asyncio.Semaphore(settings.experiment.parallel_llm_calls)
 
     async def run(self, *, experiment_id: str, benchmarks: list[BenchmarkTask],
                   n_candidates: int, resume: bool = False, base_seed: int | None = 0) -> None:
@@ -77,9 +78,10 @@ class ExperimentRunner:
         n = len(items)
         base = items[0].seed
         try:
-            outputs: list[GenerationOutput] = await self.provider.generate(
-                prompt=prompt, n=n, seed=base
-            )
+            async with self._llm_sema:
+                outputs: list[GenerationOutput] = await self.provider.generate(
+                    prompt=prompt, n=n, seed=base
+                )
         except Exception as e:
             log.exception("Generation failed for %s: %s", task.task_id, e)
             outputs = [GenerationOutput(
