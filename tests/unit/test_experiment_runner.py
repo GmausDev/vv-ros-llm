@@ -33,8 +33,13 @@ def _task(task_id: str = "T1"):
     })
 
 
-def _settings(parallel: int = 2):
-    return SimpleNamespace(experiment=SimpleNamespace(parallel_containers=parallel))
+def _settings(parallel: int = 2, parallel_llm: int = 2):
+    return SimpleNamespace(
+        experiment=SimpleNamespace(
+            parallel_containers=parallel,
+            parallel_llm_calls=parallel_llm,
+        )
+    )
 
 
 def _gen_output(code: str = "```python\nx=1\n```", error: str | None = None):

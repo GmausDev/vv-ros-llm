@@ -42,3 +42,4 @@ experiment:
   selection_strategy: "quality_metric"
   k_values: [1, 5, 10]
   parallel_containers: 4
+  parallel_llm_calls: 4
