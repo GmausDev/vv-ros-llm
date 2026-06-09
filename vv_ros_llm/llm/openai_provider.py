@@ -4,6 +4,7 @@ import asyncio
 import time
 
 from openai import (
+    NOT_GIVEN,
     APIConnectionError,
     APIStatusError,
     APITimeoutError,
@@ -65,7 +66,9 @@ class OpenAIProvider(LLMProvider):
                             messages=[{"role": "user", "content": prompt}],
                             temperature=temperature,
                             max_tokens=max_tokens,
-                            seed=seed,
+                            # omit seed entirely when unset — some OpenAI-compatible
+                            # endpoints (e.g. CompactifAI) may reject "seed": null
+                            seed=seed if seed is not None else NOT_GIVEN,
                         )
                     except (RateLimitError, APITimeoutError, APIConnectionError) as e:
                         raise RetryableLLMError(str(e)) from e
