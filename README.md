@@ -81,7 +81,7 @@ vv-ros-llm
   benchmarks list        [--difficulty EASY|MEDIUM|HARD] [--node-type TYPE]
   benchmarks show        TASK_ID
 
-  experiment run         --provider openai|anthropic|ollama
+  experiment run         --provider openai|anthropic|ollama|hypernova
                          [--n N] [--task-ids A,B,C]
                          [--difficulty ...] [--node-type ...]
                          [--resume] [--experiment-id ID]
@@ -127,7 +127,7 @@ Precedence (highest first): CLI flags → environment variables (`VV_ROS_LLM_*`)
 
 Key config sections in `config/default.yaml`:
 
-- `llm.providers.{openai,anthropic,ollama}` — model, temperature, max_tokens, base_url.
+- `llm.providers.{openai,anthropic,ollama,hypernova}` — model, temperature, max_tokens, base_url.
 - `docker` — image, timeout, memory_limit, cpus, network (default `none`).
 - `vv_pipeline.enabled_methods` — which V&V methods run, in order.
 - `benchmarks.data_path` / filters.
@@ -140,6 +140,7 @@ Key config sections in `config/default.yaml`:
 | OpenAI | `openai>=1.40` | `OPENAI_API_KEY` | Uses `seed` for reproducibility; `tiktoken` for token counts. |
 | Anthropic | `anthropic>=0.86` | `ANTHROPIC_API_KEY` | No `seed` parameter — diversity driven by temperature. |
 | Ollama | `httpx` | none | Defaults to `http://localhost:11434`. |
+| HyperNova | `openai` (OpenAI-compatible CompactifAI endpoint) | `HYPERNOVA_API_KEY` | `seed` ignored by API — diversity via temperature, like Anthropic. |
 
 All providers retry on 429 / 5xx / timeouts via `tenacity` with exponential jitter.
 

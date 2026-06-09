@@ -48,6 +48,22 @@ def test_env_api_key_wins_over_yaml(sample_yaml: Path, monkeypatch):
     s = load_settings(sample_yaml)
     assert s.openai_api_key.get_secret_value() == "env-key"
 
+def test_hypernova_api_key_from_env(sample_yaml: Path, monkeypatch):
+    monkeypatch.setenv("HYPERNOVA_API_KEY", "hn-secret-key")
+    s = load_settings(sample_yaml)
+    assert s.hypernova_api_key.get_secret_value() == "hn-secret-key"
+    assert "hn-secret-key" not in repr(s)
+
+def test_hypernova_api_key_compactifai_alias(sample_yaml: Path, monkeypatch):
+    monkeypatch.setenv("COMPACTIFAI_API_KEY", "cf-alias-key")
+    s = load_settings(sample_yaml)
+    assert s.hypernova_api_key.get_secret_value() == "cf-alias-key"
+
+def test_hypernova_defaults_when_omitted_from_yaml(sample_yaml: Path):
+    s = load_settings(sample_yaml)
+    assert s.llm.hypernova.model == "hypernova-60b"
+    assert s.llm.hypernova.base_url == "https://api.compactif.ai/v1"
+
 def test_missing_explicit_yaml_path_raises(tmp_path, monkeypatch):
     monkeypatch.setenv("VV_ROS_LLM_LLM__OPENAI__MODEL", "env-model")
     monkeypatch.setenv("VV_ROS_LLM_LLM__ANTHROPIC__MODEL", "env-a")

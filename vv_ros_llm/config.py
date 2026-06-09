@@ -24,6 +24,9 @@ class LLMConfig(BaseModel):
     openai: LLMProviderConfig
     anthropic: LLMProviderConfig
     ollama: LLMProviderConfig
+    hypernova: LLMProviderConfig = LLMProviderConfig(
+        model="hypernova-60b", base_url="https://api.compactif.ai/v1"
+    )
 
 
 class DockerConfig(BaseModel):
@@ -99,6 +102,12 @@ class Settings(BaseSettings):
     anthropic_api_key: SecretStr | None = Field(
         default=None,
         validation_alias=AliasChoices("ANTHROPIC_API_KEY", "VV_ROS_LLM_ANTHROPIC_API_KEY"),
+    )
+    hypernova_api_key: SecretStr | None = Field(
+        default=None,
+        validation_alias=AliasChoices(
+            "HYPERNOVA_API_KEY", "COMPACTIFAI_API_KEY", "VV_ROS_LLM_HYPERNOVA_API_KEY"
+        ),
     )
     log_level: str = "INFO"
 

@@ -18,7 +18,7 @@ class GenerationOutput:
 
 
 class LLMProvider(ABC):
-    """Abstract LLM provider. Implementations live in vv_ros_llm.llm.{openai,anthropic,ollama}_provider."""
+    """Abstract LLM provider. Implementations live in vv_ros_llm.llm.{openai,anthropic,ollama,hypernova}_provider."""
 
     provider_name: str = "base"
 

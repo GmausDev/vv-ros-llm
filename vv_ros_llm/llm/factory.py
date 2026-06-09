@@ -4,7 +4,7 @@ from .base import LLMProvider
 
 
 def build_provider(name: str, settings) -> LLMProvider:
-    """Build a provider from a loaded Settings instance. `name` is 'openai'|'anthropic'|'ollama'."""
+    """Build a provider from a loaded Settings instance. `name` is 'openai'|'anthropic'|'ollama'|'hypernova'."""
     name = name.lower()
     llm_cfg = settings.llm
     if name == "openai":
@@ -37,6 +37,27 @@ def build_provider(name: str, settings) -> LLMProvider:
             api_key=key,
             temperature=cfg.temperature,
             max_tokens=cfg.max_tokens,
+        )
+    if name == "hypernova":
+        from .hypernova_provider import HypernovaProvider
+
+        cfg = llm_cfg.hypernova
+        key = (
+            settings.hypernova_api_key.get_secret_value()
+            if settings.hypernova_api_key
+            else ""
+        )
+        if not key:
+            raise ValueError(
+                "Hypernova provider requires HYPERNOVA_API_KEY "
+                "(or COMPACTIFAI_API_KEY) to be set"
+            )
+        return HypernovaProvider(
+            model=cfg.model,
+            api_key=key,
+            temperature=cfg.temperature,
+            max_tokens=cfg.max_tokens,
+            base_url=cfg.base_url,
         )
     if name == "ollama":
         from .ollama_provider import OllamaProvider
