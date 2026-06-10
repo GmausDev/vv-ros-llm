@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import sys
 import time
 
 from vv_ros_llm.schemas import ExecutionResult, ExecutionStatus, MethodResult
@@ -28,6 +29,9 @@ class PylintRosCheck:
         t0 = time.perf_counter()
         try:
             proc = await asyncio.create_subprocess_exec(
+                # -m pylint: resolve from the running interpreter's env, not PATH
+                sys.executable,
+                "-m",
                 "pylint",
                 "--output-format=json",
                 f"--load-plugins={PLUGIN_MODULE}",

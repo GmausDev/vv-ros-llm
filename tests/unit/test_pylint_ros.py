@@ -42,3 +42,22 @@ async def test_pylint_crash_fatal_bit(monkeypatch, tmp_path):
                         interface_spec={}, test_oracle={}, workspace=tmp_path)
     res = await PylintRosCheck().run(ctx)
     assert res.execution.status == "CRASH"
+
+
+@pytest.mark.asyncio
+async def test_real_pylint_missing_destroy_node_yields_finding_not_crash(tmp_path):
+    """Regression: add_message(node=None) in close() crashed the whole pylint
+    run for any candidate missing destroy_node, recording CRASH instead of
+    the W9003 finding. Runs the real pylint subprocess."""
+    (tmp_path / "candidate_node.py").write_text(
+        "import rclpy\n"
+        "def main():\n"
+        "    rclpy.init()\n"
+        "    rclpy.shutdown()\n"
+    )
+    ctx = MethodContext(task_id="T", candidate_idx=0, candidate_code="", entry_point="N",
+                        interface_spec={}, test_oracle={}, workspace=tmp_path)
+    res = await PylintRosCheck().run(ctx)
+    assert res.execution.status != "CRASH", res.execution.stderr
+    ids = {f.get("message-id") or f.get("messageId") for f in res.findings}
+    assert "W9003" in ids or "missing-destroy-node" in {f.get("symbol") for f in res.findings}

@@ -17,14 +17,13 @@ class TestRclpyLifecycleChecker(CheckerTestCase):
 
     def test_missing_all_three_lifecycle_messages(self):
         mod = astroid.parse("x = 1\n")
-        self.walk(mod)
         with self.assertAddsMessages(
-            MessageTest(msg_id="missing-rclpy-init", line=1),
-            MessageTest(msg_id="missing-rclpy-shutdown", line=1),
-            MessageTest(msg_id="missing-destroy-node", line=1),
+            MessageTest(msg_id="missing-rclpy-init", node=mod),
+            MessageTest(msg_id="missing-rclpy-shutdown", node=mod),
+            MessageTest(msg_id="missing-destroy-node", node=mod),
             ignore_position=True,
         ):
-            self.checker.close()
+            self.walk(mod)
 
     def test_silent_when_all_present(self):
         code = """
@@ -36,9 +35,8 @@ def main():
     rclpy.shutdown()
 """
         mod = astroid.parse(code)
-        self.walk(mod)
         with self.assertNoMessages():
-            self.checker.close()
+            self.walk(mod)
 
 
 class TestBlockingCallInCallbackChecker(CheckerTestCase):
