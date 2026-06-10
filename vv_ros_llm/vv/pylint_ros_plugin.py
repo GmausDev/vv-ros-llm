@@ -36,6 +36,9 @@ class RclpyLifecycleChecker(BaseChecker):
         self._saw_shutdown = False
         self._saw_destroy = False
 
+    def visit_module(self, node: nodes.Module) -> None:
+        self._saw_init = self._saw_shutdown = self._saw_destroy = False
+
     def visit_call(self, node: nodes.Call) -> None:
         if isinstance(node.func, nodes.Attribute):
             func_name = node.func.attrname
@@ -47,14 +50,16 @@ class RclpyLifecycleChecker(BaseChecker):
             if func_name == "destroy_node":
                 self._saw_destroy = True
 
-    def close(self) -> None:
+    def leave_module(self, node: nodes.Module) -> None:
+        # File-wide findings are anchored to the module node: add_message with
+        # node=None in close() crashes pylint (no active file context there),
+        # taking the whole run down instead of emitting the finding.
         if not self._saw_init:
-            self.add_message("missing-rclpy-init", node=None, line=1)
+            self.add_message("missing-rclpy-init", node=node)
         if not self._saw_shutdown:
-            self.add_message("missing-rclpy-shutdown", node=None, line=1)
+            self.add_message("missing-rclpy-shutdown", node=node)
         if not self._saw_destroy:
-            self.add_message("missing-destroy-node", node=None, line=1)
-        self._saw_init = self._saw_shutdown = self._saw_destroy = False
+            self.add_message("missing-destroy-node", node=node)
 
 
 class BlockingCallInCallbackChecker(BaseChecker):
